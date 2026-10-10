@@ -27,7 +27,23 @@
   <section class="library-head"><div><p class="eyebrow">TA MUSIQUE</p><h2>Bibliothèque <span id="trackCount">0</span></h2></div><div class="library-actions"><input type="search" id="search" placeholder="Rechercher un titre…" aria-label="Rechercher une musique"><label class="add-button" for="fileInput">＋ Ajouter des musiques</label><input type="file" id="fileInput" accept="audio/*,.mp3,.m4a,.wav,.ogg,.flac,.aac,.opus" multiple hidden></div></section>
   <div class="tabs" role="tablist"><button class="tab active" data-view="all" role="tab" aria-selected="true">Toutes les musiques</button><button class="tab" data-view="favorites" role="tab" aria-selected="false">Favoris</button><button class="tab" data-view="queue" role="tab" aria-selected="false">File d'attente</button></div>
   <div class="track-list" id="trackList"><div class="empty"><span>♫</span><h3>Aucune musique pour le moment</h3><p>Ajoute des fichiers depuis ton appareil. Ils restent sur cet appareil et ne sont pas envoyés sur un serveur.</p></div></div>
-  <section class="connection"><div><p class="eyebrow">SOURCE EXTERNE</p><h2>Musique des autres applications</h2><p>La version web ne peut pas inspecter les lectures de Deezer, Spotify ou d'autres applications. La prise en charge système nécessitera une application compagnon Windows ou Android avec tes autorisations. La connexion Bluetooth classique ne contourne pas cette restriction.</p></div><span class="status">Non disponible sur le Web</span></section>
+<section class="connection" id="externalSection">
+  <div class="external-content">
+    <p class="eyebrow">LECTURE DE L'APPAREIL · WINDOWS</p>
+    <h2>Applications musicales</h2>
+    <p>Installe puis lance le compagnon Windows pour afficher les sessions multimédias exposées par Spotify, Deezer, le navigateur et d'autres applications compatibles. Il fonctionne uniquement sur ton ordinateur.</p>
+    <div class="external-status" id="externalStatus" aria-live="polite">Compagnon non connecté</div>
+    <div class="external-track" id="externalTrack" hidden>
+      <strong id="externalTitle">—</strong><span id="externalArtist">—</span>
+      <div class="external-buttons"><button id="externalPrev" type="button" title="Précédent">|◀</button><button id="externalPlay" type="button">▶ / Ⅱ</button><button id="externalNext" type="button" title="Suivant">▶|</button></div>
+    </div>
+    <div class="external-actions"><button type="button" id="connectCompanion">Connecter le compagnon</button><a href="https://github.com/GabyY-1/Music-Player-X1/blob/main/companion/windows/README.md" target="_blank" rel="noopener noreferrer">Installer le compagnon Windows ↗</a></div>
+  </div>
+</section>
+<section class="connection" id="bluetoothSection">
+  <div class="external-content"><p class="eyebrow">SORTIE AUDIO · BLUETOOTH</p><h2>Enceintes et casques Bluetooth</h2><p>Associe d'abord ton appareil Bluetooth dans les paramètres du système. Sur les navigateurs compatibles, tu peux ensuite le choisir pour la lecture de Music Player X1. Cela ne récupère pas la musique jouée sur ton téléphone.</p>
+  <div class="external-actions"><button type="button" id="outputBtn">Choisir la sortie audio</button><span id="outputStatus" class="external-status" aria-live="polite">Sortie par défaut du système</span></div></div>
+</section>
 </main>
 <footer>Music Player X1 · Lecteur local, respectueux de tes données · <span id="offlineState">Vérification du mode hors ligne…</span></footer>
 </div>
