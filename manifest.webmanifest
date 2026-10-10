@@ -1,0 +1,19 @@
+{
+  "name": "Music Player X1",
+  "short_name": "Music X1",
+  "description": "Lecteur audio personnel pour navigateur et Chromebook",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090a0d",
+  "theme_color": "#090a0d",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
