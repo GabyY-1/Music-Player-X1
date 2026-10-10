@@ -19,3 +19,9 @@ Les fichiers audio sélectionnés sont stockés localement via IndexedDB, sous r
 ## Licence
 
 Code de départ du lecteur. Ajouter une licence adaptée avant publication et redistribution.
+
+## Lectures des applications externes (Windows)
+`companion/windows/companion.py` lit les sessions Windows GSMTC et les expose **uniquement à l'ordinateur local** sur `127.0.0.1:8765`. Voir `companion/windows/README.md`. Les apps doivent exposer leurs sessions à Windows; Deezer, Spotify et les navigateurs peuvent se comporter différemment suivant la version. Le navigateur peut bloquer une connexion depuis une PWA HTTPS vers localhost selon ses règles de sécurité; tester sur Chrome/Edge et autoriser l'accès local si demandé.
+
+## Bluetooth
+Le bouton **Choisir la sortie audio** utilise `navigator.mediaDevices.selectAudioOutput()` et `HTMLMediaElement.setSinkId()` si disponibles. Associer le casque/l'enceinte dans Windows ou ChromeOS avant de sélectionner la sortie. Ce n'est **pas** une connexion AVRCP, ni une capture universelle de métadonnées Bluetooth.
