@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#090a0d">
+<meta name="description" content="Music Player X1 – lecteur audio local et interface PWA.">
+<title>Music Player X1</title>
+<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="app" id="app">
+<header class="topbar">
+  <div class="identity"><span class="mark">♫</span><span>Music Player <b>X1</b></span></div>
+  <div class="topactions"><span class="source-indicator" id="sourceIndicator"><span class="dot"></span> Lecteur local</span><button class="icon-btn" id="themeBtn" title="Changer de thème" aria-label="Changer de thème">☾</button><button class="icon-btn" id="installBtn" hidden title="Installer l'application">↓</button></div>
+</header>
+<main>
+  <div class="intro"><div><p class="eyebrow">TON ESPACE MUSICAL</p><h1>En cours de lecture</h1></div><span class="pill" id="playState">En attente</span></div>
+  <section class="player" aria-label="Lecteur de musique">
+    <div class="artwork" id="artwork"><div class="art-placeholder"><span>♫</span><small>MUSIC PLAYER X1</small></div></div>
+    <div class="player-right">
+      <div class="track-title-wrap"><span class="eyebrow" id="trackSource">BIBLIOTHÈQUE LOCALE</span><h2 id="trackTitle">Choisis une musique</h2><p id="trackArtist">Ajoute tes fichiers audio pour commencer</p></div>
+      <div class="seek-wrap"><input type="range" min="0" max="1000" value="0" id="seek" aria-label="Position dans la musique" disabled><div class="times"><span id="elapsed">0:00</span><span id="duration">0:00</span></div></div>
+      <div class="controls"><button class="control" id="shuffleBtn" title="Lecture aléatoire" aria-label="Lecture aléatoire">⤨</button><button class="control" id="prevBtn" title="Précédent" aria-label="Précédent">|◀</button><button class="control main-control" id="playBtn" title="Lecture / pause" aria-label="Lecture ou pause">▶</button><button class="control" id="nextBtn" title="Suivant" aria-label="Suivant">▶|</button><button class="control" id="repeatBtn" title="Répéter" aria-label="Répéter">↻</button></div>
+      <div class="player-footer"><div class="volume"><label for="volume" title="Volume">◖))</label><input id="volume" type="range" min="0" max="1" value=".8" step=".01" aria-label="Volume"></div><span id="formatLabel">MP3 · WAV · FLAC · OGG et autres formats compatibles</span></div>
+    </div>
+  </section>
+  <section class="library-head"><div><p class="eyebrow">TA MUSIQUE</p><h2>Bibliothèque <span id="trackCount">0</span></h2></div><div class="library-actions"><input type="search" id="search" placeholder="Rechercher un titre…" aria-label="Rechercher une musique"><label class="add-button" for="fileInput">＋ Ajouter des musiques</label><input type="file" id="fileInput" accept="audio/*,.mp3,.m4a,.wav,.ogg,.flac,.aac,.opus" multiple hidden></div></section>
+  <div class="tabs" role="tablist"><button class="tab active" data-view="all" role="tab" aria-selected="true">Toutes les musiques</button><button class="tab" data-view="favorites" role="tab" aria-selected="false">Favoris</button><button class="tab" data-view="queue" role="tab" aria-selected="false">File d'attente</button></div>
+  <div class="track-list" id="trackList"><div class="empty"><span>♫</span><h3>Aucune musique pour le moment</h3><p>Ajoute des fichiers depuis ton appareil. Ils restent sur cet appareil et ne sont pas envoyés sur un serveur.</p></div></div>
+  <section class="connection"><div><p class="eyebrow">SOURCE EXTERNE</p><h2>Musique des autres applications</h2><p>La version web ne peut pas inspecter les lectures de Deezer, Spotify ou d'autres applications. La prise en charge système nécessitera une application compagnon Windows ou Android avec tes autorisations. La connexion Bluetooth classique ne contourne pas cette restriction.</p></div><span class="status">Non disponible sur le Web</span></section>
+</main>
+<footer>Music Player X1 · Lecteur local, respectueux de tes données · <span id="offlineState">Vérification du mode hors ligne…</span></footer>
+</div>
+<audio id="audio" preload="metadata"></audio><div id="toast" role="status" aria-live="polite"></div>
+<script src="./app.js" defer></script>
+</body>
+</html>
