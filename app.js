@@ -37,3 +37,54 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredIns
 if('serviceWorker'in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('./sw.js').then(()=>$('offlineState').textContent='PWA prête pour une utilisation hors ligne').catch(()=>$('offlineState').textContent='Mode hors ligne indisponible')}else $('offlineState').textContent='Héberge le site en HTTPS pour installer la PWA';
 document.addEventListener('keydown',e=>{const tag=document.activeElement?.tagName;if(tag==='INPUT'||tag==='TEXTAREA'||e.altKey||e.ctrlKey||e.metaKey)return;if(e.code==='Space'){e.preventDefault();audio.paused?play():audio.pause()}if(e.code==='ArrowRight'&&currentId)audio.currentTime=Math.min(audio.duration||0,audio.currentTime+5);if(e.code==='ArrowLeft'&&currentId)audio.currentTime=Math.max(0,audio.currentTime-5)});
 initialize();
+/* Local Windows media companion. Requests are initiated by the user and stay on loopback. */
+const COMPANION_URL='http://127.0.0.1:8765';
+let companionConnected=false,companionTimer=null,companionRequest=false;
+async function companionFetch(path,opts={}){
+ const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),1900);
+ try{const response=await fetch(COMPANION_URL+path,{...opts,signal:controller.signal,cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);return await response.json()}
+ finally{clearTimeout(timeout)}
+}
+function companionRender(data){
+ const session=data.session;const available=Boolean(session);
+ $('externalStatus').textContent=available?'Connecté · '+(session.app||'Application multimédia'):'Connecté · aucune lecture externe détectée';
+ $('externalTrack').hidden=!available;
+ if(available){$('externalTitle').textContent=session.title||'Titre inconnu';$('externalArtist').textContent=(session.artist||'Artiste inconnu')+' · '+(session.status||'Statut inconnu')}
+ $('sourceIndicator').innerHTML='<span class="dot"></span> Compagnon Windows';
+}
+async function pollCompanion(){
+ if(!companionConnected||companionRequest)return;companionRequest=true;
+ try{companionRender(await companionFetch('/status'))}
+ catch(e){stopCompanion();$('externalStatus').textContent='Compagnon déconnecté';notify('Connexion au compagnon interrompue')}
+ finally{companionRequest=false}
+}
+function stopCompanion(){companionConnected=false;if(companionTimer)clearInterval(companionTimer);companionTimer=null;$('sourceIndicator').innerHTML='<span class="dot"></span> Lecteur local';$('connectCompanion').textContent='Connecter le compagnon'}
+$('connectCompanion').onclick=async()=>{
+ if(companionConnected){stopCompanion();$('externalTrack').hidden=true;$('externalStatus').textContent='Compagnon déconnecté';return}
+ $('externalStatus').textContent='Recherche du compagnon sur cet ordinateur…';
+ try{const data=await companionFetch('/status');companionConnected=true;companionRender(data);$('connectCompanion').textContent='Déconnecter';companionTimer=setInterval(pollCompanion,3000)}
+ catch(e){$('externalStatus').textContent='Compagnon absent ou accès local bloqué. Consulte le guide Windows.';notify('Lance le compagnon Windows puis réessaie.')}
+};
+async function companionCommand(action){
+ if(!companionConnected)return;
+ try{const data=await companionFetch('/control',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action})});if(!data.ok)notify('Commande non acceptée par cette application');await pollCompanion()}
+ catch(e){notify('Impossible de contrôler cette application')}
+}
+$('externalPrev').onclick=()=>companionCommand('previous');
+$('externalPlay').onclick=()=>companionCommand('toggle');
+$('externalNext').onclick=()=>companionCommand('next');
+/* Browser audio output selection: compatible desktop Chrome/Edge only. */
+$('outputBtn').onclick=async()=>{
+ if(typeof audio.setSinkId!=='function'){
+  $('outputStatus').textContent='Sélection indisponible dans ce navigateur. Utilise les paramètres audio du système.';return;
+ }
+ try{
+  if(typeof navigator.mediaDevices?.selectAudioOutput==='function'){
+   const device=await navigator.mediaDevices.selectAudioOutput();
+   await audio.setSinkId(device.deviceId);
+   $('outputStatus').textContent='Sortie sélectionnée : '+(device.label||'Périphérique audio');
+  }else{
+   $('outputStatus').textContent='Sélection directe non prise en charge. Choisis ton casque Bluetooth comme sortie du système.';
+  }
+ }catch(e){$('outputStatus').textContent=e.name==='NotAllowedError'?'Sélection annulée ou non autorisée.':'Sortie non sélectionnable dans ce navigateur.'}
+};
